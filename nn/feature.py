@@ -30,29 +30,29 @@ def generate_input_planes(board: GoBoard, color: Stone, sym: int=0) -> np.ndarra
     #     相手の石 : 3枚目の入力面
     board_plane = np.identity(3)[board_data].transpose()
 
-    # 直前の着手を取得
-    _, previous_move, _ = board.record.get(board.moves - 1)
+    # n+1手前の着手を取得(n=0,1,2,3,4)
+    prev_moves = [PASS if board.moves < i + 1 else board.record.get(board.moves - i - 1) for i in range(5)]
 
-    # 直前の着手の座標
-    #     着手 : 4枚目の入力面
-    #     パス : 5枚目の入力面
-    if board.moves > 1 and previous_move == PASS:
-        history_plane = np.zeros(shape=(1, board_size ** 2))
-        pass_plane = np.ones(shape=(1, board_size ** 2))
-    else:
-        previous_move_data = [1 if previous_move == board.get_symmetrical_coordinate(pos, sym) \
-            else 0 for pos in board.onboard_pos]
-        history_plane = np.array(previous_move_data).reshape(1, board_size**2)
-        pass_plane = np.zeros(shape=(1, board_size ** 2))
+    # n+1手前の着手の座標
+    #     着手 : 4+2n枚目の入力面
+    #     パス : 5+2n枚目の入力面
+    history_planes = [np.zeros(shape=(1, board_size ** 2)) for i in range(5)]
+    pass_planes = [np.zeros(shape=(1, board_size ** 2)) for i in range(5)]
+    for i in range(5):
+        if board.moves > i + 1 and prev_moves[i] == PASS:
+            pass_planes[i] = np.ones(shape=(1, board_size ** 2))
+        else:
+            prev_move_data = [1 if prev_moves[i] == board.get_symmetrical_coordinate(pos, sym) else 0 for pos in board.onboard_pos]
+            history_planes[i] = np.array(prev_move_data).reshape(1, board_size ** 2)
 
-    # 手番の色 (6番目の入力面)
+    # 手番の色 (14番目の入力面)
     # 黒番は1、白番は-1
     color_plane = np.ones(shape=(1, board_size**2))
     if color == Stone.WHITE:
         color_plane = color_plane * -1
 
-    input_data = np.concatenate([board_plane, history_plane, pass_plane, color_plane]) \
-        .reshape(6, board_size, board_size).astype(np.float32) # pylint: disable=E1121
+    input_data = np.concatenate([board_plane, history_planes[0], pass_planes[0], history_planes[1], pass_planes[1], history_planes[2], pass_planes[2], history_planes[3], pass_planes[3], history_planes[4], pass_planes[4], color_plane]) \
+        .reshape(14, board_size, board_size).astype(np.float32) # pylint: disable=E1121
 
     return input_data
 

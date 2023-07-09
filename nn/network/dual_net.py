@@ -22,15 +22,15 @@ class DualNet(nn.Module): # pylint: disable=R0902
             board_size (int, optional): 碁盤のサイズ。 デフォルト値はBOARD_SIZE。
         """
         super().__init__()
-        filters = 64
-        blocks = 6
+        filters = 81
+        blocks = 8
 
         self.device = device
 
-        self.conv_layer = nn.Conv2d(in_channels=6, out_channels=filters, \
+        self.conv_layer = nn.Conv2d(in_channels=14, out_channels=filters, \
             kernel_size=3, padding=1, bias=False)
         self.bn_layer = nn.BatchNorm2d(num_features=filters)
-        self.relu = nn.ReLU()
+        self.relu = nn.LeakyReLU()
         self.blocks = make_common_blocks(blocks, filters)
         self.policy_head = PolicyHead(board_size, filters)
         self.value_head = ValueHead(board_size, filters)

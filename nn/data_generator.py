@@ -50,8 +50,12 @@ def generate_supervised_learning_data(program_dir: str, kifu_dir: str, \
 
     kifu_counter = 1
     data_counter = 0
+    i = 0
 
-    for kifu_path in sorted(glob.glob(os.path.join(kifu_dir, "*.sgf"))):
+    kifus = glob.glob(os.path.join(kifu_dir, "*.sgf"))
+
+    for kifu_path in sorted(kifus):
+        print("Processing kifu " + str(i) + " / " + str(len(kifus)))
         board.clear()
         sgf = SGFReader(kifu_path, board_size)
         color = Stone.BLACK
@@ -77,6 +81,7 @@ def generate_supervised_learning_data(program_dir: str, kifu_dir: str, \
             data_counter += 1
 
         kifu_counter += 1
+        i += 1
 
     # 端数の出力
     n_batches = len(value_data) // BATCH_SIZE

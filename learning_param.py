@@ -8,7 +8,7 @@ SL_LEARNING_RATE = 0.01
 RL_LEARNING_RATE = 0.01
 
 # ミニバッチサイズ
-BATCH_SIZE = 256
+BATCH_SIZE = 1024
 
 # 学習器のモーメンタムパラメータ
 MOMENTUM=0.9
@@ -28,7 +28,7 @@ LEARNING_SCHEDULE = {
 }
 
 # npzファイル1つに格納するデータの個数
-DATA_SET_SIZE = BATCH_SIZE * 4000
+DATA_SET_SIZE = BATCH_SIZE * 500
 
 # Policyのlossに対するValueのlossの重み比率
 SL_VALUE_WEIGHT = 0.02
@@ -40,7 +40,7 @@ RL_VALUE_WEIGHT = 1.0
 SELF_PLAY_VISITS = 16
 
 # 自己対戦実行ワーカ数
-NUM_SELF_PLAY_WORKERS = 4
+NUM_SELF_PLAY_WORKERS = 64
 
 # 1回の学習ごとに生成する棋譜の数
 NUM_SELF_PLAY_GAMES = 10000

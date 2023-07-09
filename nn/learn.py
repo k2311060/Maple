@@ -155,7 +155,9 @@ def train_on_gpu(program_dir: str, board_size: int, batch_size: int, \
     current_lr = SL_LEARNING_RATE
 
     for epoch in range(epochs):
+        print("Epoch " + str(epoch) + " / " + str(epochs))
         for data_index, train_data_path in enumerate(train_data_set):
+            print("Data Set " + str(data_index) + " / " + str(len(train_data_set)))
             plane_data, policy_data, value_data = load_data_set(train_data_path)
             train_loss = {
                 "loss": 0.0,
@@ -166,6 +168,7 @@ def train_on_gpu(program_dir: str, board_size: int, batch_size: int, \
             dual_net.train()
             epoch_time = time.time()
             for i in range(0, len(value_data) - batch_size + 1, batch_size):
+                print("Learning... " + str(i) + " / " + str(len(value_data) - batch_size + 1))
                 with torch.cuda.amp.autocast(enabled=True):
                     plane = torch.tensor(plane_data[i:i+batch_size]).to(device)
                     policy = torch.tensor(policy_data[i:i+batch_size]).to(device)
@@ -199,6 +202,7 @@ def train_on_gpu(program_dir: str, board_size: int, batch_size: int, \
         test_iteration = 0
         testing_time = time.time()
         for data_index, test_data_path in enumerate(test_data_set):
+            print("Testing... " + str(data_index) + " / " + str(len(test_data_set)))
             dual_net.eval()
             plane_data, policy_data, value_data = load_data_set(test_data_path)
             with torch.no_grad():
