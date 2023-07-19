@@ -38,6 +38,11 @@ class TimeManager:
         self.remaining_time = [remaining_time] * 2
         self.time_limit = 0
         self.start_time = 0
+        self.time_div = 250.0
+        self.time_div_limit = 12.0
+        self.dec_rate = 40.0
+        self.dec_rate_limit = 1.5
+        self.dec_dec_rate = 0.5
 
 
     def initialize(self):
@@ -74,7 +79,9 @@ class TimeManager:
         if self.mode == TimeControl.TIME_CONTROL:
             remaining_time = self.remaining_time[0] \
                 if color is Stone.BLACK else self.remaining_time[1]
-            self.time_limit = remaining_time / 10.0
+            self.time_limit = remaining_time / self.time_div
+            self.time_div = self.time_div - self.dec_rate if self.time_div - self.dec_rate >= self.time_div_limit else self.time_div_limit
+            self.dec_rate = self.dec_rate - self.dec_dec_rate if self.dec_rate - self.dec_dec_rate >= self.dec_rate_limit else self.dec_rate_limit
             return int(self.search_speed * self.time_limit)
         return int(self.constant_visits)
 
